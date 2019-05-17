@@ -98,15 +98,49 @@ namespace APIHospital.Controllers
 
             return Ok(viewModel);
         }
-        
-        [Route("api/{id:int}/recordvisit")]
-        public IHttpActionResult RecordVisit(int id, Visit visit)
+
+        [Authorize]
+        [HttpGet]
+        [Route("visit-by-id/{id:int}", Name = "VisitById")]
+        public IHttpActionResult VisitById(int id)
         {
-            var dbContext = new ApplicationDbContext();
-            var patient = dbContext.Patients.Where(p => p.Id == id).FirstOrDefault();
-            patient.Visits.Add(visit);
-            dbContext.SaveChanges();
-            return Ok(patient);
+            var category = DbContext.Visits.FirstOrDefault(p => p.Id == id);
+
+            if (category == null)
+            {
+                return NotFound();
+            }
+
+            var viewModel = new VisitViewModel(category);
+
+            return Ok(viewModel);
         }
+
+        [Authorize]
+        [HttpPost]
+        [Route("api/{id:int}/recordvisit")]
+        public IHttpActionResult RecordVisit(int id, VisitBindingModel model)
+        {
+            var patientId = DbContext.Patients.FirstOrDefault(p => p.Id == id).Id;
+            var patient = DbContext.Patients.FirstOrDefault(p => p.Id == id);
+
+            var visit = new Visit()
+            {
+                Date = DateTime.Now,
+                Comments = model.Comments,
+                PatientId = patientId
+            };
+
+            patient.Visits.Add(visit);
+            DbContext.SaveChanges();
+
+            var url = Url.Link("VisitById", new { Id = visit.Id });
+
+            var viewModel = new PatientViewModel(patient);
+
+            return Created(url, viewModel);
+        }
+
+        
     }
 }
