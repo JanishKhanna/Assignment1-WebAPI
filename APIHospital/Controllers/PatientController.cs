@@ -11,7 +11,7 @@ using System.Web.Http;
 
 namespace APIHospital.Controllers
 {
-    
+
     [RoutePrefix("api/patient")]
     public class PatientController : ApiController
     {
@@ -24,7 +24,7 @@ namespace APIHospital.Controllers
 
         [Authorize]
         public IHttpActionResult Get()
-        {            
+        {
             return Ok(DbContext.Patients.ToList());
         }
 
@@ -35,7 +35,7 @@ namespace APIHospital.Controllers
         {
             var patient = DbContext.Patients.FirstOrDefault(p => p.Id == id);
 
-            if(patient == null)
+            if (patient == null)
             {
                 return NotFound();
             }
@@ -81,7 +81,7 @@ namespace APIHospital.Controllers
         {
             var patientToEdit = DbContext.Patients.FirstOrDefault(p => p.Id == id);
 
-            if(patientToEdit == null)
+            if (patientToEdit == null)
             {
                 return NotFound();
             }
@@ -141,6 +141,6 @@ namespace APIHospital.Controllers
             return Created(url, viewModel);
         }
 
-        
+
     }
 }
