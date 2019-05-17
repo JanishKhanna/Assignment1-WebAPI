@@ -104,14 +104,14 @@ namespace APIHospital.Controllers
         [Route("visit-by-id/{id:int}", Name = "VisitById")]
         public IHttpActionResult VisitById(int id)
         {
-            var category = DbContext.Visits.FirstOrDefault(p => p.Id == id);
+            var visit = DbContext.Visits.FirstOrDefault(p => p.Id == id);
 
-            if (category == null)
+            if (visit == null)
             {
                 return NotFound();
             }
 
-            var viewModel = new VisitViewModel(category);
+            var viewModel = new VisitViewModel(visit);
 
             return Ok(viewModel);
         }
